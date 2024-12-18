@@ -19,7 +19,6 @@ userRouter.post("/users", async (req: Request, res: Response) => {
 
     const user = await User.create({email, password, username})
     res.status(200).send({message: "user created!", user})
-
   } catch(err) {
     res.status(500).send({message: "Internal server error"})
   }
