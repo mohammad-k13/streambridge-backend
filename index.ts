@@ -4,6 +4,7 @@ import http from "http";
 import cors from "cors";
 import routes from "./src/routes"
 import { setupSocketIO } from "./src/socket";
+import connectDB from "./src/services/db";
 
 const app = express();
 
@@ -22,6 +23,10 @@ app.get("/", (req: Request, res: Response) => {
 app.use(routes)
 
 const PORT = 8080;
-server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+connectDB().then(() => {
+  console.log("connect to MongoDB")
+  server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+  
+})
