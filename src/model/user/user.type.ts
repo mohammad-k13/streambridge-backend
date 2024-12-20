@@ -3,7 +3,7 @@ interface IUser  {
   username: string,
   password: string,
 
-  comparePassword: (hashedPassword: string) => void;
+  comparePassword: (hashedPassword: string) => boolean;
 }
 
 export default IUser;
