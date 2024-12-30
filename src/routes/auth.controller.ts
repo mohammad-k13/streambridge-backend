@@ -1,3 +1,6 @@
+/**
+ * Handles authentication-related routes.
+ */
 import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
 import { compare } from "bcryptjs";
@@ -37,6 +40,38 @@ authRouter.post("/login", async (req: Request, res: Response) => {
             expires,
         });
         res.status(200).send({ message: "logged In", sessionToken: session.sessionToken, expires: session.expires });
+    } catch (err) {
+        res.status(500).send({ message: "Internal server error" });
+    }
+});
+
+authRouter.post("/validation-session", async (req: Request, res: Response) => {
+    const { sessionToken, username } = req.body;
+
+    if (!sessionToken || !username) {
+        res.status(400).send({ message: "All information are Requirement" });
+        return;
+    }
+
+    try {
+        const session = await Session.findOne({ sessionToken });
+        if (!session) {
+            res.status(404).send({ message: "Session not found" });
+            return;
+        }
+
+        const user = await User.findById(session.userId);
+        if (!user) {
+            res.status(404).send({ message: "User not found" });
+            return;
+        }
+
+        if (user.username !== username) {
+            res.status(404).send({ message: "username not match" });
+            return;
+        }
+
+        res.status(200).send({ message: "Session is valid" });
     } catch (err) {
         res.status(500).send({ message: "Internal server error" });
     }
