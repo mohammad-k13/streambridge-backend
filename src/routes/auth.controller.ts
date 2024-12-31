@@ -5,6 +5,7 @@ import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
 import { compare } from "bcryptjs";
 import Session from "../model/session/session.model";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 const authRouter = Router();
 
@@ -40,6 +41,28 @@ authRouter.post("/login", async (req: Request, res: Response) => {
             expires,
         });
         res.status(200).send({ message: "logged In", sessionToken: session.sessionToken, expires: session.expires });
+    } catch (err) {
+        res.status(500).send({ message: "Internal server error" });
+    }
+});
+
+authRouter.post("/register", async (req: Request, res: Response) => {
+    const { email, password, username } = req.body;
+
+    if (!email || !password || !username) {
+        res.status(400).send({ message: "All information are required" });
+        return;
+    }
+
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            res.status(409).send({ message: "this email is taken" });
+            return;
+        }
+
+        const user = await User.create({ email, password, username });
+        res.status(200).send({ message: "user created!", user });
     } catch (err) {
         res.status(500).send({ message: "Internal server error" });
     }
