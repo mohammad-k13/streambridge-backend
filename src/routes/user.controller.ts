@@ -1,30 +1,22 @@
 import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
 import { ExitStatus } from "typescript";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 const userRouter = Router();
 
-userRouter.post("/users", async (req: Request, res: Response) => {
-  const {email , password, username} = req.body;
+interface UserRequest extends Request {
+  userId?: any;
+}
 
-  if(!email || !password || !username) {
-    res.status(400).send({message: "All information are required"})
-    return
-  }
-
-  try {
-    const existingUser = await User.findOne({email});
-    if(existingUser) {
-      res.status(409).send({message: "this email is taken"})
-      return;
+userRouter.get("/users", authMiddleware, async (req: UserRequest, res: Response) => {
+    try {
+        console.log("userId", req.userId)
+        // const users = await User.find();
+        res.status(200).send([]);
+    } catch (err) {
+        res.status(500).send({ message: "Internal server error" });
     }
-
-    const user = await User.create({email, password, username})
-    res.status(200).send({message: "user created!", user})
-  } catch(err) {
-    res.status(500).send({message: "Internal server error"})
-  }
-
-})
+});
 
 export default userRouter;
