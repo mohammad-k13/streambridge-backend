@@ -2,13 +2,13 @@ import express, { Request, Response } from "express";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
-import routes from "./src/routes"
+import routes from "./src/routes";
 import { setupSocketIO } from "./src/socket";
 import connectDB from "./src/services/db";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:3000"] }));
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -17,16 +17,15 @@ const server = http.createServer(app);
 setupSocketIO(server);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Socket.IO with Express and TypeScript");
+    res.send("Socket.IO with Express and TypeScript");
 });
 
-app.use(routes)
+app.use(routes);
 
 const PORT = 8080;
 connectDB().then(() => {
-  console.log("connect to MongoDB")
-  server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-  
-})
+    console.log("connect to MongoDB");
+    server.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+});

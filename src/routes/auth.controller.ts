@@ -33,7 +33,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
         }
 
         const now = new Date();
-        const expires = now.setHours(now.getHours() + 1);
+        const expires = now.setHours(now.getDay() + 15);
 
         const session = await Session.create({
             sessionToken: user?.id,
