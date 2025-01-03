@@ -3,9 +3,11 @@
  */
 import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import Session from "../model/session/session.model";
 import { authMiddleware } from "../middleware/auth.middleware";
+import {v4} from 'uuid'
+import { RequestWithUserId } from "./user.controller";
 
 const authRouter = Router();
 
@@ -33,15 +35,28 @@ authRouter.post("/login", async (req: Request, res: Response) => {
         }
 
         const now = new Date();
-        const expires = now.setHours(now.getHours() + 1);
+        now.setHours(now.getHours() + 15);
+        const expires = new Date(now);
 
-        const session = await Session.create({
-            sessionToken: user?.id,
-            userId: user?.id,
-            expires,
+        const rawToken = v4();
+
+        const session = await Session.findOneAndUpdate(
+            { userId: user._id },
+            {
+                expires,
+                sessionToken: rawToken,
+            },
+            { new: true, upsert: true }
+        );
+
+        await session.save();
+        res.status(200).send({
+            message: "Logged In",
+            sessionToken: rawToken,
+            expires: session.expires,
         });
-        res.status(200).send({ message: "logged In", sessionToken: session.sessionToken, expires: session.expires });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: "Internal server error" });
     }
 });
@@ -99,5 +114,19 @@ authRouter.post("/validation-session", async (req: Request, res: Response) => {
         res.status(500).send({ message: "Internal server error" });
     }
 });
+
+authRouter.post("/matchUserIdWithToken", authMiddleware, (req: RequestWithUserId, res: Response) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        res.status(400).json({ message: "Data needed" });
+        return;
+    }
+
+    const isMatch = req.userId === userId;
+
+    res.status(200).json({ isMatch });
+});
+
 
 export default authRouter;
