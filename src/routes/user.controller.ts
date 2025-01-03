@@ -11,9 +11,8 @@ interface UserRequest extends Request {
 
 userRouter.get("/users", authMiddleware, async (req: UserRequest, res: Response) => {
     try {
-        console.log("userId", req.userId)
-        // const users = await User.find();
-        res.status(200).send([]);
+        const users = await User.find({}, {password: 0, email: 0, });
+        res.status(200).send(users);
     } catch (err) {
         res.status(500).send({ message: "Internal server error" });
     }

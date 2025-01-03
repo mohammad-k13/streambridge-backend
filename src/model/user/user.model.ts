@@ -23,7 +23,8 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     required: true,
     default: ""
-  }
+  },
+  image: {type: String, require: false},
 }, {
   timestamps: true
 })

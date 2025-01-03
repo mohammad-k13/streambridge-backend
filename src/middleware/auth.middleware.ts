@@ -10,24 +10,25 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         return;
     }
 
-    const sessionToken = authHeader.split(" ")[1];
+    const rawToken = authHeader.split(" ")[1];
+    console.log(rawToken)
 
     try {
-        const sessions = await Session.find({ expires: { $gt: new Date() } });
-        console.log(sessions);
-        const validSession = sessions
-            .map((session) => {
-                const isValid = session.compareSessionToken(sessionToken);
-                return isValid ? session : null;
-            })
-            .find((session) => session !== null);
+        const session = await Session.findOne({ expires: { $gt: new Date() } });
 
-        if (!validSession) {
-            res.status(403).json({ message: "Invalid or expired session token." });
+        if (!session) {
+            res.status(403).json({ message: "Session not found or expired." });
             return;
         }
 
-        (req as any).userId = validSession.userId.toString();
+        const isValid = await compare(rawToken, session.sessionToken);
+        console.log(rawToken)
+        if (!isValid) {
+            res.status(403).json({ message: "Invalid session token." });
+            return;
+        }
+
+        (req as any).userId = session.userId.toString();
 
         next();
     } catch (err) {

@@ -3,9 +3,10 @@
  */
 import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import Session from "../model/session/session.model";
 import { authMiddleware } from "../middleware/auth.middleware";
+import {v4} from 'uuid'
 
 const authRouter = Router();
 
@@ -33,15 +34,28 @@ authRouter.post("/login", async (req: Request, res: Response) => {
         }
 
         const now = new Date();
-        const expires = now.setHours(now.getDay() + 15);
+        now.setHours(now.getHours() + 15);
+        const expires = new Date(now);
 
-        const session = await Session.create({
-            sessionToken: user?.id,
-            userId: user?.id,
-            expires,
+        const rawToken = v4();
+
+        const session = await Session.findOneAndUpdate(
+            { userId: user._id },
+            {
+                expires,
+                sessionToken: rawToken,
+            },
+            { new: true, upsert: true }
+        );
+
+        await session.save();
+        res.status(200).send({
+            message: "Logged In",
+            sessionToken: rawToken,
+            expires: session.expires,
         });
-        res.status(200).send({ message: "logged In", sessionToken: session.sessionToken, expires: session.expires });
     } catch (err) {
+        console.log(err);
         res.status(500).send({ message: "Internal server error" });
     }
 });
