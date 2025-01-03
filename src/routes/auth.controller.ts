@@ -7,6 +7,7 @@ import { compare, hash } from "bcryptjs";
 import Session from "../model/session/session.model";
 import { authMiddleware } from "../middleware/auth.middleware";
 import {v4} from 'uuid'
+import { RequestWithUserId } from "./user.controller";
 
 const authRouter = Router();
 
@@ -113,5 +114,19 @@ authRouter.post("/validation-session", async (req: Request, res: Response) => {
         res.status(500).send({ message: "Internal server error" });
     }
 });
+
+authRouter.post("/matchUserIdWithToken", authMiddleware, (req: RequestWithUserId, res: Response) => {
+    const { userId } = req.body;
+
+    if (!userId) {
+        res.status(400).json({ message: "Data needed" });
+        return;
+    }
+
+    const isMatch = req.userId === userId;
+
+    res.status(200).json({ isMatch });
+});
+
 
 export default authRouter;

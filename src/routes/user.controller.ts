@@ -5,11 +5,11 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const userRouter = Router();
 
-interface UserRequest extends Request {
+export interface RequestWithUserId extends Request {
   userId?: any;
 }
 
-userRouter.get("/users", authMiddleware, async (req: UserRequest, res: Response) => {
+userRouter.get("/users", authMiddleware, async (req: RequestWithUserId, res: Response) => {
     try {
         const users = await User.find({}, {password: 0, email: 0, });
         res.status(200).send(users);
