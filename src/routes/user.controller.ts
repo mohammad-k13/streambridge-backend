@@ -18,4 +18,14 @@ userRouter.get("/users", authMiddleware, async (req: RequestWithUserId, res: Res
     }
 });
 
+userRouter.get("/thisUserInfo", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+    try {
+        const user = await User.findById(req.userId, {password: 0});
+        res.status(200).send(user);
+    } catch(err) {
+        console.log("/thisUserInfo", err);
+        res.status(500).send({message: "Internal server error"})
+    }
+})
+
 export default userRouter;
