@@ -6,10 +6,7 @@ export interface SocketWithUserId extends Socket {
     userId: string;
 }
 
-
-//todo: make a local var => map
-//todo: store data in this format => userId: socket.id
-//todo: in every connection update this
+export const OnlineUsers = new Map();
 
 export const setupSocketIO = (server: any) => {
     const io = new Server(server, {
@@ -21,9 +18,15 @@ export const setupSocketIO = (server: any) => {
     io.use(socketAuthMiddleware);
 
     io.on("connection", (socket: Socket) => {
+        const userId = (socket as SocketWithUserId).userId;
+
+        if (userId) {
+            OnlineUsers.set(userId, socket.id);
+        }
         messageEvents(io, socket as SocketWithUserId);
 
         socket.on("disconnect", () => {
+            OnlineUsers.delete(userId);
             console.log("User disconnected:", socket.id);
         });
     });

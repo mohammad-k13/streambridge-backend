@@ -13,6 +13,11 @@ const messageSchema = new mongoose.Schema<IMessage>(
             ref: "User",
             required: true,
         },
+        seen: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
         message: {
             type: String,
             required: true,
