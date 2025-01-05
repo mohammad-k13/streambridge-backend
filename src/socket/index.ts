@@ -22,6 +22,7 @@ export const setupSocketIO = (server: any) => {
 
         if (userId) {
             OnlineUsers.set(userId, socket.id);
+            console.log(`User ${userId} connected to socket ${socket.id}`)
         }
         messageEvents(io, socket as SocketWithUserId);
 
