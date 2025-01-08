@@ -10,14 +10,12 @@ const staticValuesSchema = new mongoose.Schema<IStaticValues>({
   },
   value: {
     type: String,
-    enum: [],
     required: true,
-    validate: {
-      validator: function (value: string) {
-        return allowedValues[this.key as keyof AllowedValues].includes(value);
-      },
-    },
   },
+  description: {
+    type: String,
+    required: true,
+  }
 });
 
 const StaticValues = model("StaticValues", staticValuesSchema);
