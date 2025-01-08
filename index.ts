@@ -25,6 +25,7 @@ app.use(routes);
 const PORT = 8080;
 connectDB().then(() => {
     console.log("connect to MongoDB");
+    
     server.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });
