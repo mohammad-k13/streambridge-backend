@@ -82,7 +82,7 @@ type StaticValue<K extends keyof AllowedValues> = {
 };
 
 // All possible static values, respecting the key-value structure
-export const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
+const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
     {
         key: "FriendRequestStatus",
         value: "pending",
@@ -195,3 +195,6 @@ export const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
     { key: "MediaType", value: "audio", description: "Media type is audio" },
     { key: "MediaType", value: "document", description: "Media type is a document" },
 ];
+
+
+export default allStaticsValues

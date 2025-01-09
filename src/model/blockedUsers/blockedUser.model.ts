@@ -12,7 +12,7 @@ const blockedUserSchema = new mongoose.Schema<IBlockedUsers>({
     ref: "User",
     required: true,
   }
-});
+}, {timestamps: true});
 
 const BlockedUser = model<IBlockedUsers>("BlockedUser", blockedUserSchema);
 export default BlockedUser;

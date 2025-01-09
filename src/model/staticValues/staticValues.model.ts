@@ -3,19 +3,19 @@ import { IStaticValues } from "./staticValues.type";
 import { AllowedValues, allowedValues } from "../../constants/staticValues";
 
 const staticValuesSchema = new mongoose.Schema<IStaticValues>({
-  key: {
-    type: String,
-    enum: Object.keys(allowedValues),
-    required: true,
-  },
-  value: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  }
+    key: {
+        type: String,
+        enum: Object.keys(allowedValues),
+        required: true,
+    },
+    value: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true,
+    },
 });
 
 const StaticValues = model("StaticValues", staticValuesSchema);
