@@ -25,6 +25,7 @@ export const setupSocketIO = (server: any) => {
             console.log(`User ${userId} connected to socket ${socket.id}`)
         }
         messageEvents(io, socket as SocketWithUserId);
+        console.log("helosmooosl")
 
         socket.on("disconnect", () => {
             OnlineUsers.delete(userId);
