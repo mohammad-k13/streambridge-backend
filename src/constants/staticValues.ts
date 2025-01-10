@@ -82,7 +82,7 @@ type StaticValue<K extends keyof AllowedValues> = {
 };
 
 // All possible static values, respecting the key-value structure
-const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
+export const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
     {
         key: "FriendRequestStatus",
         value: "pending",
@@ -197,4 +197,3 @@ const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
 ];
 
 
-export default allStaticsValues

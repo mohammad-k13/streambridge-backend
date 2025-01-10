@@ -7,6 +7,7 @@ import { setupSocketIO } from "./src/socket";
 import connectDB from "./src/services/db";
 import { allStaticsValues } from "./src/constants/staticValues";
 import StaticValues from "./src/model/staticValues/staticValues.model";
+import User from "./src/model/user/user.model";
 
 const app = express();
 
