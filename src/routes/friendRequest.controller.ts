@@ -5,6 +5,7 @@ import User from "../model/user/user.model";
 import FriendRequest from "../model/friendRequest/friendRequest.model";
 import { AllowedValues, allowedValues } from "../constants/staticValues";
 import Notification from "../model/notification/notification.model";
+import { ObjectId } from 'mongodb'
 
 const friendRequestRouter = Router();
 
@@ -60,7 +61,33 @@ friendRequestRouter.post("/friend-request", authMiddleware, async (req: RequestW
 
 friendRequestRouter.get("/all-friend-request", authMiddleware, async (req: RequestWithUserId, res: Response) => {
     try {
-        const allRequests = await FriendRequest.find({ recieverId: req.userId }, { senderId: 0, _id: 0 });
+        const allRequests = await FriendRequest.aggregate([
+            {
+                $match: { recieverId: new ObjectId(req.userId) },
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "senderId",
+                    foreignField: "_id",
+                    as: "senderInfo",
+                },
+            },
+            {
+                $unwind: "$senderInfo",
+            },
+            {
+                $project: {
+                    _id: 1,
+                    status: 1,
+                    senderInfo: {
+                        image: 1,
+                        username: 1
+                    }
+                },
+            },
+        ]);
+        console.log(allRequests);
         res.status(200).send(allRequests);
     } catch (err) {
         console.log("/all-friend-request -- get", err);
