@@ -8,10 +8,12 @@ import connectDB from "./src/services/db";
 import { allStaticsValues } from "./src/constants/staticValues";
 import StaticValues from "./src/model/staticValues/staticValues.model";
 import User from "./src/model/user/user.model";
+import { config } from "dotenv";
 
 const app = express();
+config();
 
-app.use(cors({ origin: ["http://localhost:3000"] }));
+app.use(cors({ origin: [process.env.CLIENT_URL as string] }));
 app.use(express.json());
 
 const server = http.createServer(app);
