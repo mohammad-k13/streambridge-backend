@@ -3,9 +3,10 @@ import { authMiddleware } from "../middleware/auth.middleware";
 import { RequestWithUserId } from "./user.controller";
 import User from "../model/user/user.model";
 import FriendRequest from "../model/friendRequest/friendRequest.model";
-import { AllowedValues, allowedValues } from "../constants/staticValues";
+import { AllowedValues, allowedValues, FriendRequestStatus } from "../constants/staticValues";
 import Notification from "../model/notification/notification.model";
-import { ObjectId } from 'mongodb'
+import { ObjectId } from "mongodb";
+import Friend from "../model/friend/friend.model";
 
 const friendRequestRouter = Router();
 
@@ -80,17 +81,51 @@ friendRequestRouter.get("/all-friend-request", authMiddleware, async (req: Reque
                 $project: {
                     _id: 1,
                     status: 1,
+                    createdAt: 1,
                     senderInfo: {
                         image: 1,
-                        username: 1
-                    }
+                        username: 1,
+                    },
                 },
             },
         ]);
-        console.log(allRequests);
         res.status(200).send(allRequests);
     } catch (err) {
         console.log("/all-friend-request -- get", err);
+        res.status(500).send({ message: "Internal server error" });
+    }
+});
+
+friendRequestRouter.post("/answer-to-request", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+    const { newStatus, request_id, username } = req.body as {
+        newStatus: FriendRequestStatus;
+        request_id: string;
+        username: string;
+    };
+
+    if (!newStatus) {
+        res.status(404).send({ message: "Invalid Body" });
+        return;
+    }
+
+    try {
+        if (newStatus === "rejected") {
+            await FriendRequest.findOneAndUpdate({ _id: request_id }, { status: newStatus });
+            res.status(200).send({ message: "Request Rejected" });
+        } else {
+            const sender_user = await User.findOne({ username });
+            if (!sender_user) {
+                res.status(404).send({ message: "Sender of this request was deleted!" });
+                return;
+            }
+
+            await FriendRequest.findOneAndUpdate({ _id: request_id }, { status: newStatus });
+            await Friend.create({ reciverId: req.userId, senderId: sender_user._id });
+
+            res.status(200).send({ message: "Request Accepted" });
+        }
+    } catch (err) {
+        console.log("/answer-to-request -- post", err);
         res.status(500).send({ message: "Internal server error" });
     }
 });

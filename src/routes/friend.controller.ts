@@ -7,9 +7,12 @@ import User from "../model/user/user.model";
 const friendRouter = Router();
 
 friendRouter.get("/all-friends", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+    console.log(req.userId);
     try {
-        const allFriends = await Friend.find({ senderId: req.userId }, { senderId: 0 });
-        const users = await User.find({ _id: { $in: allFriends } }).select("username image");
+        const allFriends = await Friend.find({ reciverId: req.userId });
+        const friendIds = allFriends.map((friend) => friend.senderId);
+
+        const users = await User.find({ _id: { $in: friendIds } }).select("username image");
         res.status(200).send(users);
     } catch (err) {
         console.log("all-friends -- get", err);

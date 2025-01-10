@@ -1,11 +1,11 @@
-type FriendRequestStatus = "pending" | "accepted" | "rejected";
-type MessageReadStatus = "unread" | "read";
-type ConversationType = "private" | "group" | "channel";
-type NotificationType = "friend_request" | "message" | "mention" | "system";
-type SessionStatus = "active" | "inactive";
-type ConversationMemberRole = "member" | "admin" | "owner";
+export type FriendRequestStatus = "pending" | "accepted" | "rejected";
+export type MessageReadStatus = "unread" | "read";
+export type ConversationType = "private" | "group" | "channel";
+export type NotificationType = "friend_request" | "message" | "mention" | "system";
+export type SessionStatus = "active" | "inactive";
+export type ConversationMemberRole = "member" | "admin" | "owner";
 
-type ActivityTypes =
+export type ActivityTypes =
     | "login"
     | "logout"
     | "message_sent"
