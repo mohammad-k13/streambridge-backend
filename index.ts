@@ -5,6 +5,9 @@ import cors from "cors";
 import routes from "./src/routes";
 import { setupSocketIO } from "./src/socket";
 import connectDB from "./src/services/db";
+import { allStaticsValues } from "./src/constants/staticValues";
+import StaticValues from "./src/model/staticValues/staticValues.model";
+import User from "./src/model/user/user.model";
 
 const app = express();
 
@@ -23,7 +26,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use(routes);
 
 const PORT = 8080;
-connectDB().then(() => {
+connectDB().then(async () => {
     console.log("connect to MongoDB");
     server.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);

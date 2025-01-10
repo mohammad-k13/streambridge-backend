@@ -1,11 +1,12 @@
 import { Server, Socket } from "socket.io";
-import { assignUser } from "./events/assign-user";
 import { socketAuthMiddleware } from "../middleware/socket-auth.middleware";
 import { messageEvents } from "./events/messge";
 
 export interface SocketWithUserId extends Socket {
     userId: string;
 }
+
+export const OnlineUsers = new Map();
 
 export const setupSocketIO = (server: any) => {
     const io = new Server(server, {
@@ -17,10 +18,17 @@ export const setupSocketIO = (server: any) => {
     io.use(socketAuthMiddleware);
 
     io.on("connection", (socket: Socket) => {
-        assignUser(io, socket as SocketWithUserId);
+        const userId = (socket as SocketWithUserId).userId;
+
+        if (userId) {
+            OnlineUsers.set(userId, socket.id);
+            console.log(`User ${userId} connected to socket ${socket.id}`)
+        }
         messageEvents(io, socket as SocketWithUserId);
+        console.log("helosmooosl")
 
         socket.on("disconnect", () => {
+            OnlineUsers.delete(userId);
             console.log("User disconnected:", socket.id);
         });
     });

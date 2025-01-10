@@ -14,6 +14,15 @@ chatRouter.get("/chats", authMiddleware, async (req: RequestWithUserId, res: Res
             console.log("/chat", err);
             res.status(500).send({message: "Internal server error"})
       }
+});
+
+chatRouter.get("/messages", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+      try {
+            
+      } catch(err) {
+            console.log("/chat/messages", err);
+            res.status(500).send({message: "Internal Server Error"})
+      }
 })
 
 export default chatRouter;

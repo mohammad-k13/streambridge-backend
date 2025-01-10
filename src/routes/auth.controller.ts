@@ -6,7 +6,7 @@ import User from "../model/user/user.model";
 import { compare, hash } from "bcryptjs";
 import Session from "../model/session/session.model";
 import { authMiddleware } from "../middleware/auth.middleware";
-import {v4} from 'uuid'
+import { v4 } from "uuid";
 import { RequestWithUserId } from "./user.controller";
 
 const authRouter = Router();
@@ -70,9 +70,16 @@ authRouter.post("/register", async (req: Request, res: Response) => {
     }
 
     try {
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            res.status(409).send({ message: "this email is taken" });
+        const existingUserByUsername = await User.findOne({ username });
+        const existingUserByEmail = await User.findOne({ email });
+
+        if (existingUserByUsername) {
+            res.status(409).send({ message: "This username is taken" });
+            return;
+        }
+
+        if (existingUserByEmail) {
+            res.status(409).send({ message: "This email is taken" });
             return;
         }
 
@@ -127,6 +134,5 @@ authRouter.post("/matchUserIdWithToken", authMiddleware, (req: RequestWithUserId
 
     res.status(200).json({ isMatch });
 });
-
 
 export default authRouter;
