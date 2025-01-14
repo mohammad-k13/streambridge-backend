@@ -12,10 +12,11 @@ export const OnlineUsers = new Map();
 export const setupSocketIO = (server: any) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:3000",
+            origin: "http://localhost:3000", // Replace with your frontend URL
+            methods: ["GET", "POST"],
+            credentials: true,
         },
     });
-
     io.use(socketAuthMiddleware);
 
     io.on("connection", (socket: Socket) => {

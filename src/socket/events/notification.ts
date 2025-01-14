@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { SocketWithUserId } from "..";
 import Notification from "../../model/notification/notification.model";
+import { INotification } from "../../model/notification/notification.type";
 
 export const notificationEvents = (io: Server, socket: SocketWithUserId) => {
     socket.on(
@@ -18,8 +19,8 @@ export const notificationEvents = (io: Server, socket: SocketWithUserId) => {
         }
     );
 
-    socket.on("notification:getAll", async () => {
-        const allNotifications = await Notification.find();
-        socket.emit("notification:all", allNotifications);
+    socket.on("notification:getAll", async (cb: (allNotifications: INotification) => void) => {
+        const allNotifications = await Notification.find({userId: socket.userId}, {userId: 0}) as any;
+        cb(allNotifications);
     });
 };
