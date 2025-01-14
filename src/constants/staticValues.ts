@@ -5,6 +5,14 @@ export type NotificationType = "friend_request" | "message" | "mention" | "syste
 export type SessionStatus = "active" | "inactive";
 export type ConversationMemberRole = "member" | "admin" | "owner";
 
+export const NotificationContent: Record<NotificationType, string> = {
+    friend_request: "You have a new friend request.",
+    message: "You received a new message.",
+    mention: "You were mentioned in a post.",
+    system: "System notification: Check for updates.",
+};
+
+
 export type ActivityTypes =
     | "login"
     | "logout"

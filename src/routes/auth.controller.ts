@@ -7,7 +7,7 @@ import { compare, hash } from "bcryptjs";
 import Session from "../model/session/session.model";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { v4 } from "uuid";
-import { RequestWithUserId } from "./user.controller";
+import { RequestWithPayload } from "./user.controller";
 
 const authRouter = Router();
 
@@ -122,7 +122,7 @@ authRouter.post("/validation-session", async (req: Request, res: Response) => {
     }
 });
 
-authRouter.post("/matchUserIdWithToken", authMiddleware, (req: RequestWithUserId, res: Response) => {
+authRouter.post("/matchUserIdWithToken", authMiddleware, (req: RequestWithPayload, res: Response) => {
     const { userId } = req.body;
 
     if (!userId) {

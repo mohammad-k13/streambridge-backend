@@ -1,12 +1,12 @@
 import { Response, Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { RequestWithUserId } from "./user.controller";
+import { RequestWithPayload } from "./user.controller";
 import Friend from "../model/friend/friend.model";
 import User from "../model/user/user.model";
 
 const friendRouter = Router();
 
-friendRouter.get("/all-friends", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+friendRouter.get("/all-friends", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     console.log(req.userId);
     try {
         const allFriends = await Friend.find({ reciverId: req.userId });

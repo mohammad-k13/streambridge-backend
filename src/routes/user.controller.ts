@@ -2,14 +2,16 @@ import { Request, Response, Router } from "express";
 import User from "../model/user/user.model";
 import { ExitStatus } from "typescript";
 import { authMiddleware } from "../middleware/auth.middleware";
+import { Server } from "socket.io";
 
 const userRouter = Router();
 
-export interface RequestWithUserId extends Request {
+export interface RequestWithPayload extends Request {
     userId?: any;
+    io?: Server
 }
 
-userRouter.get("/users", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+userRouter.get("/users", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     try {
         const filters = req.query;
         const query: any = {};
@@ -43,7 +45,7 @@ userRouter.get("/users", authMiddleware, async (req: RequestWithUserId, res: Res
 });
 
 
-userRouter.get("/thisUserInfo", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+userRouter.get("/thisUserInfo", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     try {
         const user = await User.findById(req.userId, { password: 0 });
         res.status(200).send(user);

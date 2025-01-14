@@ -9,6 +9,7 @@ import { allStaticsValues } from "./src/constants/staticValues";
 import StaticValues from "./src/model/staticValues/staticValues.model";
 import User from "./src/model/user/user.model";
 import { config } from "dotenv";
+import { RequestWithPayload } from "./src/routes/user.controller";
 
 const app = express();
 const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
@@ -21,7 +22,12 @@ app.use(express.json());
 const server = http.createServer(app);
 
 // Initialize Socket.io
-setupSocketIO(server);
+const io = setupSocketIO(server);
+
+app.use((req: RequestWithPayload, res, next) => {
+    req.io = io;
+    next();
+})
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Socket.IO with Express and TypeScript");
