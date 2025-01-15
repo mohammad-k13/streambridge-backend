@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { socketAuthMiddleware } from "../middleware/socket-auth.middleware";
 import { messageEvents } from "./events/messge";
+import { notificationEvents } from "./events/notification";
 
 export interface SocketWithUserId extends Socket {
     userId: string;
@@ -11,10 +12,11 @@ export const OnlineUsers = new Map();
 export const setupSocketIO = (server: any) => {
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:3000",
+            origin: "http://localhost:3000", // Replace with your frontend URL
+            methods: ["GET", "POST"],
+            credentials: true,
         },
     });
-
     io.use(socketAuthMiddleware);
 
     io.on("connection", (socket: Socket) => {
@@ -22,10 +24,10 @@ export const setupSocketIO = (server: any) => {
 
         if (userId) {
             OnlineUsers.set(userId, socket.id);
-            console.log(`User ${userId} connected to socket ${socket.id}`)
+            console.log(`User ${userId} connected to socket ${socket.id}`);
         }
         messageEvents(io, socket as SocketWithUserId);
-        console.log("helosmooosl")
+        notificationEvents(io, socket as SocketWithUserId);
 
         socket.on("disconnect", () => {
             OnlineUsers.delete(userId);

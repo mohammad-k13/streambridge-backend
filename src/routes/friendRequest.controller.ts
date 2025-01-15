@@ -1,6 +1,6 @@
 import { Response, Router } from "express";
 import { authMiddleware } from "../middleware/auth.middleware";
-import { RequestWithUserId } from "./user.controller";
+import { RequestWithPayload } from "./user.controller";
 import User from "../model/user/user.model";
 import FriendRequest from "../model/friendRequest/friendRequest.model";
 import { AllowedValues, allowedValues, FriendRequestStatus } from "../constants/staticValues";
@@ -10,7 +10,7 @@ import Friend from "../model/friend/friend.model";
 
 const friendRequestRouter = Router();
 
-friendRequestRouter.post("/friend-request", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+friendRequestRouter.post("/friend-request", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     const { reciever_username } = req.body;
 
     if (!reciever_username) {
@@ -60,7 +60,7 @@ friendRequestRouter.post("/friend-request", authMiddleware, async (req: RequestW
     }
 });
 
-friendRequestRouter.get("/all-friend-request", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+friendRequestRouter.get("/all-friend-request", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     try {
         const allRequests = await FriendRequest.aggregate([
             {
@@ -96,7 +96,7 @@ friendRequestRouter.get("/all-friend-request", authMiddleware, async (req: Reque
     }
 });
 
-friendRequestRouter.post("/answer-to-request", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+friendRequestRouter.post("/answer-to-request", authMiddleware, async (req: RequestWithPayload, res: Response) => {
     const { newStatus, request_id, username } = req.body as {
         newStatus: FriendRequestStatus;
         request_id: string;

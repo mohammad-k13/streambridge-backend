@@ -1,11 +1,11 @@
 import { Response, Router } from "express";
-import { RequestWithUserId } from "./user.controller";
+import { RequestWithPayload } from "./user.controller";
 import User from "../model/user/user.model";
 import { authMiddleware } from "../middleware/auth.middleware";
 
 const chatRouter = Router();
 
-chatRouter.get("/chats", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+chatRouter.get("/chats", authMiddleware, async (req: RequestWithPayload, res: Response) => {
       try {
             const users = await User.find();
             const filteredUsers = users.filter(user => user._id.toString() !== req.userId);
@@ -16,7 +16,7 @@ chatRouter.get("/chats", authMiddleware, async (req: RequestWithUserId, res: Res
       }
 });
 
-chatRouter.get("/messages", authMiddleware, async (req: RequestWithUserId, res: Response) => {
+chatRouter.get("/messages", authMiddleware, async (req: RequestWithPayload, res: Response) => {
       try {
             
       } catch(err) {
