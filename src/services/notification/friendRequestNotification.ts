@@ -11,7 +11,7 @@ import { emitNotification } from "./emitNotification";
 const friendRequestNotification = async (
     io: Server,
     reciverId: string,
-    metaData: { image: string; username: string }
+    metaData: { image: string; username: string, createAt: Date }
 ) => {
     await emitNotification(io, reciverId, "friend_request", metaData);
 };

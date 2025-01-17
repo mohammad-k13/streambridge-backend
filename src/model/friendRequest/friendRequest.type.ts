@@ -5,4 +5,5 @@ export interface IFriendRequest {
     senderId: mongoose.Schema.Types.ObjectId;
     recieverId: mongoose.Schema.Types.ObjectId;
     status: AllowedValues["FriendRequestStatus"] | string;
+    createAt: Date
 }

@@ -38,10 +38,23 @@ friendRequestRouter.post(
                 return;
             }
 
+            // Check if the sender and receiver are already friends
+            const existingFriendship = await Friend.findOne({
+                $or: [
+                    { userId: req.userId, friendId: receiver_user._id },
+                    { userId: receiver_user._id, friendId: req.userId },
+                ]
+            });
+
+            if (existingFriendship) {
+                res.status(400).send({ message: "You are already friends with this user" });
+                return;
+            }
+
             const existingRequest = await FriendRequest.findOne({
-                sender: req.userId,
-                receiver: receiver_user._id,
-                status: "pending",
+                senderId: req.userId,
+                recieverId: receiver_user._id,
+                status: { $in: ["pending", "rejected"] },
             });
 
             if (existingRequest) {
@@ -52,20 +65,20 @@ friendRequestRouter.post(
             const friendRequest = await FriendRequest.create({
                 senderId: req.userId,
                 recieverId: receiver_user._id,
-                status: "pending",
             });
 
-            //create a notification for reciver
+            // Create a notification for receiver
             await Notification.create({
                 isReaded: false,
                 type: "friend_request",
                 userId: receiver_user._id,
             });
 
-            //sending notification
+            // Sending notification
             await friendRequestNotification(req.io!, receiver_user._id.toString(), {
                 image: receiver_user.image ?? "",
                 username: receiver_user.username,
+                createAt: friendRequest.createAt,
             });
 
             res.status(200).send({ message: "Friend request sent", friendRequest });
@@ -75,7 +88,6 @@ friendRequestRouter.post(
         }
     }
 );
-
 friendRequestRouter.get(
     "/all-friend-request",
     authMiddleware,

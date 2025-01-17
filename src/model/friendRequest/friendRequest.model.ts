@@ -17,6 +17,7 @@ const friendRequestSchmea = new mongoose.Schema<IFriendRequest>({
       type: String,
       required: true,
       enum: allowedValues.FriendRequestStatus,
+      default: "pending"
   }
 }, {
       timestamps: true,
