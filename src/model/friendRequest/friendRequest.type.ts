@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { AllowedValues } from "../../constants/staticValues";
+import { AllowedValues } from "../../constants/types";
 
 export interface IFriendRequest {
     senderId: mongoose.Schema.Types.ObjectId;

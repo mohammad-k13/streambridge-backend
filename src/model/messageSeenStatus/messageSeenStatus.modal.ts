@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 import { IMessageSeenStatus } from "./messageSeenStatus.type";
-import { allowedValues } from "../../constants/staticValues";
+import { allowedValues } from "../../constants/types";
 
 const messageSeenStatusSchema = new mongoose.Schema<IMessageSeenStatus>({
     messageId: {

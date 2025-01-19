@@ -5,7 +5,7 @@ import cors from "cors";
 import routes from "./src/routes";
 import { setupSocketIO } from "./src/socket";
 import connectDB from "./src/services/db";
-import { allStaticsValues } from "./src/constants/staticValues";
+import { allStaticsValues } from "./src/constants/types";
 import StaticValues from "./src/model/staticValues/staticValues.model";
 import User from "./src/model/user/user.model";
 import { config } from "dotenv";

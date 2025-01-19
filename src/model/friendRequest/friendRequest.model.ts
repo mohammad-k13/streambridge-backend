@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 import { IFriendRequest } from "./friendRequest.type";
-import { allowedValues } from "../../constants/staticValues";
+import { allowedValues } from "../../constants/types";
 
 const friendRequestSchmea = new mongoose.Schema<IFriendRequest>({
     recieverId: {

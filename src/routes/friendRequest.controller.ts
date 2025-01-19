@@ -3,7 +3,7 @@ import { authMiddleware } from "../middleware/auth.middleware";
 import { RequestWithPayload } from "./user.controller";
 import User from "../model/user/user.model";
 import FriendRequest from "../model/friendRequest/friendRequest.model";
-import { AllowedValues, allowedValues, FriendRequestStatus } from "../constants/staticValues";
+import { AllowedValues, allowedValues, FriendRequestStatus } from "../constants/types";
 import Notification from "../model/notification/notification.model";
 import { ObjectId } from "mongodb";
 import Friend from "../model/friend/friend.model";

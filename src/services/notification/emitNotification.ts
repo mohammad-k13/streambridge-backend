@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { NotificationContent, NotificationType } from "../../constants/staticValues";
+import { NotificationContent, NotificationMetaData, NotificationType } from "../../constants/types";
 import Notification from "../../model/notification/notification.model";
 import { OnlineUsers } from "../../socket";
 
@@ -17,11 +17,11 @@ import { OnlineUsers } from "../../socket";
  * // Example usage to send a 'friend_request' notification
  * emitNotification(io, "recipientUserId", "friend_request", { friendName: "John Doe" });
  */
-export const emitNotification = async (
+export const emitNotification = async <T extends NotificationType>(
     io: Server,
     reciverId: string,
-    type: NotificationType,
-    metaData: Object = {}
+    type: T,
+    metaData: NotificationMetaData[T]
 ) => {
     try {
         const newNotification = await Notification.create({ type, userId: reciverId });

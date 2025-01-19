@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { emitNotification } from "./emitNotification";
-import { ActivityTypes, NotificationType } from "../../constants/staticValues";
+import { ActivityTypes, NotificationType } from "../../constants/types";
 
 /**
  *

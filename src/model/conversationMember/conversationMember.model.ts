@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 import { IConversationMember } from "./converstaionMember.type";
-import { allowedValues } from "../../constants/staticValues";
+import { allowedValues } from "../../constants/types";
 
 const converstaionMemberSchema = new mongoose.Schema<IConversationMember>(
     {

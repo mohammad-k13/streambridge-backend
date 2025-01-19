@@ -11,6 +11,38 @@ export type NotificationType =
 export type SessionStatus = "active" | "inactive";
 export type ConversationMemberRole = "member" | "admin" | "owner";
 
+type FriendRequestMetaData = {
+    username: string;
+    image: string;
+    createAt: Date;
+};
+
+type MessageMetaData = {
+    sender: string;
+    message: string;
+    timestamp: Date;
+};
+
+type MentionMetaData = {
+    postId: string;
+    username: string;
+    mentionText: string;
+};
+
+type SystemMetaData = {
+    updateVersion: string;
+    message: string;
+};
+
+export type NotificationMetaData = {
+    friend_request_accepted: Object,
+    friend_request_rejected: Object,
+    friend_request: FriendRequestMetaData;
+    message: MessageMetaData;
+    mention: MentionMetaData;
+    system: SystemMetaData;
+};
+
 export const NotificationContent: Record<NotificationType, string> = {
     friend_request: "You have a new friend request.",
     message: "You received a new message.",

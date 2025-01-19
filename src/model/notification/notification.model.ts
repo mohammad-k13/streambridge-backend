@@ -1,6 +1,6 @@
 import mongoose, { model } from "mongoose";
 import { INotification } from "./notification.type";
-import { allowedValues } from "../../constants/staticValues";
+import { allowedValues } from "../../constants/types";
 
 const notificationSchema = new mongoose.Schema<INotification>(
     {
