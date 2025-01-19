@@ -43,7 +43,7 @@ friendRequestRouter.post(
                 $or: [
                     { userId: req.userId, friendId: receiver_user._id },
                     { userId: receiver_user._id, friendId: req.userId },
-                ]
+                ],
             });
 
             if (existingFriendship) {
@@ -75,11 +75,16 @@ friendRequestRouter.post(
             });
 
             // Sending notification
-            await friendRequestNotification(req.io!, receiver_user._id.toString(), {
-                image: receiver_user.image ?? "",
-                username: receiver_user.username,
-                createAt: friendRequest.createAt,
-            });
+            await friendRequestNotification(
+                req.io!,
+                receiver_user._id.toString(),
+                "friend_request",
+                {
+                    image: receiver_user.image ?? "",
+                    username: receiver_user.username,
+                    createAt: friendRequest.createAt,
+                }
+            );
 
             res.status(200).send({ message: "Friend request sent", friendRequest });
         } catch (err) {
@@ -132,10 +137,9 @@ friendRequestRouter.post(
     "/answer-to-request",
     authMiddleware,
     async (req: RequestWithPayload, res: Response) => {
-        const { newStatus, request_id, username } = req.body as {
+        const { newStatus, request_id } = req.body as {
             newStatus: FriendRequestStatus;
             request_id: string;
-            username: string;
         };
 
         if (!newStatus) {
@@ -144,27 +148,42 @@ friendRequestRouter.post(
         }
 
         try {
+            const targetRequest = await FriendRequest.findById(request_id);
+            if (!targetRequest) {
+                res.status(404).send({ message: "This Request Not Found" });
+                return;
+            }
+
+            const sender_user = await User.findById(targetRequest.senderId);
+            if (!sender_user) {
+                res.status(404).send({ message: "Sender of this request was deleted!" });
+                return;
+            }
+
             if (newStatus === "rejected") {
                 await FriendRequest.findOneAndUpdate(
                     { _id: request_id },
                     { status: newStatus }
                 );
 
-                
+                await friendRequestNotification(
+                    req.io!,
+                    sender_user._id.toString(),
+                    "friend_request_rejected"
+                );
                 res.status(200).send({ message: "Request Rejected" });
             } else {
-                const sender_user = await User.findOne({ username });
-                if (!sender_user) {
-                    res.status(404).send({ message: "Sender of this request was deleted!" });
-                    return;
-                }
-
-                await FriendRequest.findOneAndUpdate(
+                await FriendRequest.findByIdAndUpdate(
                     { _id: request_id },
                     { status: newStatus }
                 );
                 await Friend.create({ reciverId: req.userId, senderId: sender_user._id });
 
+                await friendRequestNotification(
+                    req.io!,
+                    sender_user._id.toString(),
+                    "friend_request_accepted"
+                );
                 res.status(200).send({ message: "Request Accepted" });
             }
         } catch (err) {
