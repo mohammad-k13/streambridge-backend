@@ -1,5 +1,5 @@
 import mongoose, { model } from "mongoose";
-import { allowedValues } from "../../constants/staticValues";
+import { allowedValues } from "../../constants/types";
 import { IActivityLog } from "./activityLog.type";
 
 const activityLogSchema = new mongoose.Schema<IActivityLog>(

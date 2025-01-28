@@ -1,17 +1,56 @@
 export type FriendRequestStatus = "pending" | "accepted" | "rejected";
 export type MessageReadStatus = "unread" | "read";
 export type ConversationType = "private" | "group" | "channel";
-export type NotificationType = "friend_request" | "message" | "mention" | "system";
+export type NotificationType =
+    | "friend_request"
+    | "message"
+    | "mention"
+    | "system"
+    | "friend_request_accepted"
+    | "friend_request_rejected";
 export type SessionStatus = "active" | "inactive";
 export type ConversationMemberRole = "member" | "admin" | "owner";
+
+type FriendRequestMetaData = {
+    username: string;
+    image: string;
+    createAt: Date;
+};
+
+type MessageMetaData = {
+    sender: string;
+    message: string;
+    timestamp: Date;
+};
+
+type MentionMetaData = {
+    postId: string;
+    username: string;
+    mentionText: string;
+};
+
+type SystemMetaData = {
+    updateVersion: string;
+    message: string;
+};
+
+export type NotificationMetaData = {
+    friend_request_accepted: Object,
+    friend_request_rejected: Object,
+    friend_request: FriendRequestMetaData;
+    message: MessageMetaData;
+    mention: MentionMetaData;
+    system: SystemMetaData;
+};
 
 export const NotificationContent: Record<NotificationType, string> = {
     friend_request: "You have a new friend request.",
     message: "You received a new message.",
     mention: "You were mentioned in a post.",
     system: "System notification: Check for updates.",
+    friend_request_accepted: "Your friend request has been accepted!",
+    friend_request_rejected: "Your friend request has been rejected.",
 };
-
 
 export type ActivityTypes =
     | "login"
@@ -52,7 +91,14 @@ export const allowedValues: AllowedValues = {
     FriendRequestStatus: ["pending", "accepted", "rejected"],
     MessageReadStatus: ["unread", "read"],
     ConversationType: ["private", "group"],
-    NotificationType: ["friend_request", "message", "mention", "system"],
+    NotificationType: [
+        "friend_request",
+        "friend_request_accepted",
+        "friend_request_rejected",
+        "message",
+        "mention",
+        "system",
+    ],
     SessionStatus: ["active", "inactive"],
     ConversationMemberRole: ["member", "admin", "owner"],
     ActivityType: [
@@ -175,33 +221,91 @@ export const allStaticsValues: StaticValue<keyof AllowedValues>[] = [
     { key: "ActivityType", value: "logout", description: "User logged out of the system" },
     { key: "ActivityType", value: "message_sent", description: "User sent a message" },
     { key: "ActivityType", value: "message_received", description: "User received a message" },
-    { key: "ActivityType", value: "friend_request_sent", description: "User sent a friend request" },
-    { key: "ActivityType", value: "friend_request_accepted", description: "User accepted a friend request" },
-    { key: "ActivityType", value: "friend_request_rejected", description: "User rejected a friend request" },
-    { key: "ActivityType", value: "profile_updated", description: "User updated their profile details" },
-    { key: "ActivityType", value: "password_changed", description: "User changed their password" },
-    { key: "ActivityType", value: "email_changed", description: "User changed their email address" },
-    { key: "ActivityType", value: "notification_read", description: "User read a notification" },
-    { key: "ActivityType", value: "account_deleted", description: "User deleted their account" },
-    { key: "ActivityType", value: "conversation_created", description: "User created a new conversation" },
-    { key: "ActivityType", value: "conversation_deleted", description: "User deleted a conversation" },
+    {
+        key: "ActivityType",
+        value: "friend_request_sent",
+        description: "User sent a friend request",
+    },
+    {
+        key: "ActivityType",
+        value: "friend_request_accepted",
+        description: "User accepted a friend request",
+    },
+    {
+        key: "ActivityType",
+        value: "friend_request_rejected",
+        description: "User rejected a friend request",
+    },
+    {
+        key: "ActivityType",
+        value: "profile_updated",
+        description: "User updated their profile details",
+    },
+    {
+        key: "ActivityType",
+        value: "password_changed",
+        description: "User changed their password",
+    },
+    {
+        key: "ActivityType",
+        value: "email_changed",
+        description: "User changed their email address",
+    },
+    {
+        key: "ActivityType",
+        value: "notification_read",
+        description: "User read a notification",
+    },
+    {
+        key: "ActivityType",
+        value: "account_deleted",
+        description: "User deleted their account",
+    },
+    {
+        key: "ActivityType",
+        value: "conversation_created",
+        description: "User created a new conversation",
+    },
+    {
+        key: "ActivityType",
+        value: "conversation_deleted",
+        description: "User deleted a conversation",
+    },
     { key: "ActivityType", value: "message_deleted", description: "User deleted a message" },
-    { key: "ActivityType", value: "media_uploaded", description: "User uploaded a media file" },
+    {
+        key: "ActivityType",
+        value: "media_uploaded",
+        description: "User uploaded a media file",
+    },
     { key: "ActivityType", value: "media_deleted", description: "User deleted a media file" },
-    { key: "ActivityType", value: "group_member_added", description: "A member was added to a group conversation" },
+    {
+        key: "ActivityType",
+        value: "group_member_added",
+        description: "A member was added to a group conversation",
+    },
     {
         key: "ActivityType",
         value: "group_member_removed",
         description: "A member was removed from a group conversation",
     },
-    { key: "ActivityType", value: "role_changed", description: "User's role was changed in a conversation" },
-    { key: "ActivityType", value: "mention", description: "User was mentioned in a conversation" },
-    { key: "ActivityType", value: "system_event", description: "A system-related activity occurred" },
+    {
+        key: "ActivityType",
+        value: "role_changed",
+        description: "User's role was changed in a conversation",
+    },
+    {
+        key: "ActivityType",
+        value: "mention",
+        description: "User was mentioned in a conversation",
+    },
+    {
+        key: "ActivityType",
+        value: "system_event",
+        description: "A system-related activity occurred",
+    },
 
     { key: "MediaType", value: "image", description: "Media type is an image" },
     { key: "MediaType", value: "video", description: "Media type is a video" },
     { key: "MediaType", value: "audio", description: "Media type is audio" },
     { key: "MediaType", value: "document", description: "Media type is a document" },
 ];
-
-

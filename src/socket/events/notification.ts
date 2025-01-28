@@ -6,9 +6,10 @@ import { INotification } from "../../model/notification/notification.type";
 export const notificationEvents = (io: Server, socket: SocketWithUserId) => {
     socket.on(
         "notification:markAsRead",
-        async ({ notificationId }: { notificationId: string }) => {
+        async ({ notificationId }: { notificationId: string }, cb: (message: string) => void) => {
             try {
-                await Notification.findByIdAndUpdate(notificationId, { status: "read" });
+                await Notification.findByIdAndUpdate(notificationId, { isReaded: true });
+                cb("Notification marked as read")
                 socket.emit("notification:status", { message: "Notification marked as read" });
             } catch (error) {
                 console.error("Error marking notification as read:", error);
