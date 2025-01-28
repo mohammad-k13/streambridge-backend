@@ -23,6 +23,11 @@ friendRequestRouter.post(
         }
 
         try {
+            const sender_user = await User.findById(req.userId);
+            if (!sender_user) {
+                res.status(404).send({ message: "your account not found" });
+            }
+
             const receiver_user = await User.findOne({ username: reciever_username });
             if (!receiver_user) {
                 res.status(404).send({
@@ -80,9 +85,9 @@ friendRequestRouter.post(
                 receiver_user._id.toString(),
                 "friend_request",
                 {
-                    image: receiver_user.image ?? "",
-                    username: receiver_user.username,
-                    createAt: friendRequest.createAt,
+                    image: sender_user!.image ?? "",
+                    username: sender_user!.username,
+                    createAt: friendRequest.createdAt,
                 }
             );
 

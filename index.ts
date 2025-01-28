@@ -1,15 +1,13 @@
 import express, { Request, Response } from "express";
-import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
 import routes from "./src/routes";
 import { setupSocketIO } from "./src/socket";
 import connectDB from "./src/services/db";
-import { allStaticsValues } from "./src/constants/types";
-import StaticValues from "./src/model/staticValues/staticValues.model";
-import User from "./src/model/user/user.model";
 import { config } from "dotenv";
 import { RequestWithPayload } from "./src/routes/user.controller";
+import Notification from "./src/model/notification/notification.model";
+import FriendRequest from "./src/model/friendRequest/friendRequest.model";
 
 const app = express();
 const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
