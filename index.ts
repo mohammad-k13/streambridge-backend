@@ -8,6 +8,7 @@ import { config } from "dotenv";
 import { RequestWithPayload } from "./src/routes/user.controller";
 import Notification from "./src/model/notification/notification.model";
 import FriendRequest from "./src/model/friendRequest/friendRequest.model";
+import Friend from "./src/model/friend/friend.model";
 
 const app = express();
 const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";

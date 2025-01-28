@@ -59,7 +59,8 @@ friendRequestRouter.post(
             const existingRequest = await FriendRequest.findOne({
                 senderId: req.userId,
                 recieverId: receiver_user._id,
-                status: { $in: ["pending", "rejected"] },
+                // status: { $in: ["pending", "rejected"] },
+                status: { $in: ["pending"] },
             });
 
             if (existingRequest) {
@@ -153,6 +154,7 @@ friendRequestRouter.post(
         }
 
         try {
+            const receiver_user = await User.findById(req.userId);
             const targetRequest = await FriendRequest.findById(request_id);
             if (!targetRequest) {
                 res.status(404).send({ message: "This Request Not Found" });
@@ -174,7 +176,10 @@ friendRequestRouter.post(
                 await friendRequestNotification(
                     req.io!,
                     sender_user._id.toString(),
-                    "friend_request_rejected"
+                    "friend_request_rejected",
+                    {
+                        username: receiver_user?.username
+                    }
                 );
                 res.status(200).send({ message: "Request Rejected" });
             } else {
