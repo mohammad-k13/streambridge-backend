@@ -192,7 +192,10 @@ friendRequestRouter.post(
                 await friendRequestNotification(
                     req.io!,
                     sender_user._id.toString(),
-                    "friend_request_accepted"
+                    "friend_request_accepted",
+                    {
+                        username: receiver_user?.username
+                    }
                 );
                 res.status(200).send({ message: "Request Accepted" });
             }
