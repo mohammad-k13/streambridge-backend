@@ -7,10 +7,16 @@ import User from "../model/user/user.model";
 const friendRouter = Router();
 
 friendRouter.get("/all-friends", authMiddleware, async (req: RequestWithPayload, res: Response) => {
-    console.log(req.userId);
     try {
-        const allFriends = await Friend.find({ reciverId: req.userId });
-        const friendIds = allFriends.map((friend) => friend.senderId);
+        const allFriends = await Friend.find({ $or: [{reciverId: req.userId}, {senderId: req.userId}]});
+
+        const friendIds = allFriends.map(friend => {
+            if(String(friend.reciverId) === req.userId) {
+                return friend.senderId;
+            } else if(String(friend.senderId) === req.userId) {
+                return friend.reciverId;
+            }
+        })
 
         const users = await User.find({ _id: { $in: friendIds } }).select("username image");
         res.status(200).send(users);
