@@ -13,6 +13,6 @@ export const messageEvents = (io: Server, socket: SocketWithUserId) => {
 
         if (!reciever_socketId) return;
 
-        io.to(reciever_socketId).emit("recive-message", { message, id});
+        io.to(reciever_socketId).emit("recive-message", { message, id, senderId});
     });
 };
