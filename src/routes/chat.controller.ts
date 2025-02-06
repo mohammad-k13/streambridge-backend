@@ -35,6 +35,7 @@ chatRouter.get(
                     id: message._id.toString(),
                     text: message.message,
                     type: String(message.senderId) === userId ? "out_box" : "in_box",
+                    createdAt: message.createdAt
                 };
             });
 
