@@ -14,7 +14,6 @@ const app = express();
 const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
 config({ path: envFile });
 
-console.log([process.env.CLIENT_URL as string]);
 app.use(cors({ origin: [process.env.CLIENT_URL as string] }));
 app.use(express.json());
 

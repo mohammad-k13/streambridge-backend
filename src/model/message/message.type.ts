@@ -4,5 +4,6 @@ export default interface IMessage {
     senderId: mongoose.Schema.Types.ObjectId;
     recieverId: mongoose.Schema.Types.ObjectId;
     message: string;
-    seen: boolean
+    seen: boolean,
+    createdAt: Date,
 }
